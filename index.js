@@ -1,3 +1,6 @@
+if(process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 // importar o express para criar o nosso servidor http (web)
 const express = require('express');
 // importar o cors para impedir problema de recursos distintos (urls externas acessando o nosso backend)
@@ -19,13 +22,18 @@ app.use(cors());
 // configuro um middleware para interceptar as chamadas para a rota /musicas
 // e enviar para o nosso arquivo de rotas
 app.use('/musicas', MusicasRouter);
-
 // executando a minha funcao de conexao com o banco criado no arquivo conn.js
-Conn();
+
+// buscando os dados da variavel de ambiente
+const db_url = process.env.DB_URL;
+const db_user = process.env.DB_USER;
+const db_pass = process.env.DB_PASS;
+const db_data = process.env.DB_DATA;
+Conn(db_url, db_user, db_pass, db_data);
 
 // inicializar o servidor http em alguma porta para podermos acessar ele.
 const port = 3001;
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
   console.log(`O servidor esta rodando na porta ${port}`);
 })
 
